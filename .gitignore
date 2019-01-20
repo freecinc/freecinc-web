@@ -21,3 +21,4 @@ log/*.log
 
 tools/log/
 tools/config.yml
+/docker/app.tar

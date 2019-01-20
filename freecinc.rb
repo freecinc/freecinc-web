@@ -3,6 +3,7 @@ require 'sinatra/contrib'
 require 'pry'
 require 'yaml'
 require 'haml'
+require 'logger'
 
 # Note if you start via rackup this will be ignored
 set :port, 9952
@@ -25,11 +26,6 @@ require 'json'
 require './helpers/view_helper'
 
 class FreeCinc < Sinatra::Base
-
-  CONFIG_FILE = File.expand_path('config/location.yml', File.dirname(__FILE__))
-  RESTART_COMMAND = "pkill -f '/usr/bin/taskd server'"
-  RESTART_SECRET = YAML.load_file(CONFIG_FILE)['restart_secret']
-
   configure :production, :development do
     enable :logging
   end
@@ -77,16 +73,6 @@ post '/download/:filename' do |filename|
   copy_forge = CopyForge.new(user_name, params[:token], uuid_for_mirakel, server_with_port)
   copy_forge.read_user_certificates.send(method_name)
 end
-
-get '/restart/:secret' do |secret|
-  if secret == FreeCinc::RESTART_SECRET
-    `#{FreeCinc::RESTART_COMMAND}`
-    return 'Process restarted. Will be online in 10 seconds'
-  else
-    return 'invalid secret'
-  end
-end
-
 
 private
 def ensure_correct_environment

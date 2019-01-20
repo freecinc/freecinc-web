@@ -4,13 +4,10 @@ require 'open3'
 class Forge
   class BashCommandError < Exception; end
 
-  CONFIG_FILE = File.expand_path('../config/location.yml', File.dirname(__FILE__))
-
-  TASKDDATA = YAML.load_file(CONFIG_FILE)['taskddata']
-  INSTALL_DIR = YAML.load_file(CONFIG_FILE)['install_dir']
-  PKI_DIR = YAML.load_file(CONFIG_FILE)['pki_dir']
-  SINATRA_ROOT = YAML.load_file(CONFIG_FILE)['sinatra_root']
-  SALT = YAML.load_file(CONFIG_FILE)['salt']
+  TASKDDATA = ENV['TASKDATA']
+  INSTALL_DIR = ENV['INSTALL_DIR']
+  PKI_DIR = ENV['PKI_DIR']
+  SALT = ENV['SALT']
 
   DEFAULT_ORGANIZATION  = 'FreeCinc'
 

@@ -8,7 +8,9 @@ class ::Logger
   alias_method :write, :<<
 end
 
-logger = Logger.new("log/#{settings.environment}.log")
+logger = Logger.new(STDOUT)
+logger.level = Logger::DEBUG
+logger.info('Starting up')
 
 use Rack::CommonLogger, logger
 
