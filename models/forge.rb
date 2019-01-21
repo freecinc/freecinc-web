@@ -4,9 +4,9 @@ require 'open3'
 class Forge
   class BashCommandError < Exception; end
 
-  TASKDDATA = ENV['TASKDATA']
-  INSTALL_DIR = ENV['INSTALL_DIR']
+  TASKDDATA = ENV['TASKDDATA']
   PKI_DIR = ENV['PKI_DIR']
+  SECRETS_DIR = ENV['SECRETS_DIR']
   SALT = ENV['SALT']
 
   DEFAULT_ORGANIZATION  = 'FreeCinc'
@@ -37,13 +37,8 @@ class Forge
     DEFAULT_ORGANIZATION
   end
 
-  def in_pki_dir(&block)
-    cd_to_pki_dir
-    yield
-  end
-
-
   def all_certificates
+    puts mirakel_config
     OpenStruct.new( key: user_key,
                     cert: user_certificate,
                     ca: ca,
@@ -52,19 +47,15 @@ class Forge
   end
 
   def user_key
-    File.read("#{user_name}.key.pem")
+    File.read("#{PKI_DIR}/#{user_name}.key.pem")
   end
 
   def ca
-    File.read('ca.cert.pem')
+    File.read("#{SECRETS_DIR}/ca.cert.pem")
   end
 
   def user_certificate
-    File.read("#{user_name}.cert.pem")
-  end
-
-  def cd_to_pki_dir
-    Dir.chdir(PKI_DIR)
+    File.read("#{PKI_DIR}/#{user_name}.cert.pem")
   end
 
   def mirakel_config
@@ -101,13 +92,10 @@ class OriginalForge < Forge
   def generate_certificates
     register_user
 
-    in_pki_dir do
+    root = File.dirname File.dirname __FILE__
+    bash("#{root}/generate-client.sh #{SECRETS_DIR} #{PKI_DIR} #{user_name}")
 
-      bash("./generate.client #{user_name}")
-
-      copy_user_keys_to_taskddata
-      all_certificates
-    end
+    all_certificates
   end
 
   private
@@ -130,23 +118,19 @@ class OriginalForge < Forge
 
   def bash(command, tolerate_errors=false)
     stdin, stdout_and_stderr, wait_thr = Open3.popen2e(command)
+    stdin.close
     output = stdout_and_stderr.read
 
     unless (wait_thr.value.success? || tolerate_errors)
-      raise BashCommandError, stdout_and_stderr.read
+      raise BashCommandError, output
     end
 
-    stdin.close
     stdout_and_stderr.close
     output
   end
 
   def bash_with_tolerated_errors(command)
     bash(command, true)
-  end
-
-  def copy_user_keys_to_taskddata
-    bash("cp #{user_name}.* #{TASKDDATA}")
   end
 
   def register_user
@@ -180,9 +164,7 @@ class CopyForge < Forge
 
   def read_user_certificates
     return nil unless authenticated?
-    in_pki_dir do
-      all_certificates
-    end
+    all_certificates
   end
 
   private
