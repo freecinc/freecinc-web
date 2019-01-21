@@ -15,7 +15,7 @@ module ViewHelper
   end
 
   def server_with_port
-    "#{env['HOSTNAME']}:53589"
+    "#{env['PUBLIC_HOSTNAME']}:53589"
   end
 
   def production?
