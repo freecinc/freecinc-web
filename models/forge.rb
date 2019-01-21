@@ -38,7 +38,6 @@ class Forge
   end
 
   def all_certificates
-    puts mirakel_config
     OpenStruct.new( key: user_key,
                     cert: user_certificate,
                     ca: ca,
