@@ -18,6 +18,7 @@ Run `./build.sh` to build the docker image used to deploy this service.
 The web application expects its configuration in the form of environment variables:
 
  * `PUBLIC_HOSTNAME` -- hostname on which this service runs
+ * `APP_NAME` -- user-visible name for the service
  * `TASKDATA` -- the directory containing taskd's data
  * `PKI_DIR` -- the directory containing client certificates and keys
  * `SECRETS_DIR` -- the directory containing server and ca certificates and keys

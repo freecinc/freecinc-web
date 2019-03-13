@@ -1,6 +1,7 @@
 #! /bin/bash
 
 VERSION=$(git describe --always)
+echo $VERSION > .app-revision
 
 # package the app up for inclusion in the image
 tar -cf docker/app.tar \
@@ -12,6 +13,7 @@ tar -cf docker/app.tar \
     helpers/ \
     models/ \
     public/ \
-    views/
+    views/ \
+    .app-revision
 
 docker build -t djmitche/freecinc-web:$VERSION --no-cache docker/
