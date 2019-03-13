@@ -43,7 +43,7 @@ module ViewHelper
   end
 
   def author_email
-    'jworky@gmail.com'
+    'djmitche@gmail.com'
   end
 
   def link_to(url, text)
