@@ -46,6 +46,14 @@ module ViewHelper
     'djmitche@gmail.com'
   end
 
+  def app_name
+    "#{ENV['APP_NAME']}"
+  end
+
+  def app_revision
+    File.read("/app/.app-revision").strip()
+  end
+
   def link_to(url, text)
     "<a href='#{url}'>#{text}</a>"
   end

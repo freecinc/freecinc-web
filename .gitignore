@@ -8,6 +8,7 @@ temp
 tmp
 todo
 .ruby-version
+.app-revision
 
 taskd-1.*
 config/location.yml
