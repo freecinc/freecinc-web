@@ -79,7 +79,7 @@ module ViewHelper
     # localhost urls should keep http
     absolute_url = url(relative_url)
     return absolute_url unless production?
-    absolute_url.sub(/^http/, 'https')
+    absolute_url.sub(/^http:/, 'https:')
   end
 
 
